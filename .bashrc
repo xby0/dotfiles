@@ -242,3 +242,5 @@ ha-reload() {
 alias devbox-on="ssh proxmox 'pct start 103' && echo 'devbox starting — connect with: ssh max@192.168.0.203'"
 alias devbox-off="ssh proxmox 'pct shutdown 103' && echo 'devbox shutting down'"
 alias devbox="ssh max@192.168.0.203"
+
+eval "$(starship init bash)"
