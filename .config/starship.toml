@@ -3,15 +3,15 @@ scan_timeout = 100
 "$schema" = 'https://starship.rs/config-schema.json'
 
 format = """
-[](b1)\
+[ ░▒▓█](c1)\
 $os\
 $username\
-[](bg:b2 fg:b1)\
+[](bg:c2 fg:c1)\
 $directory\
-[](bg:b3 fg:b2)\
+[](bg:c3 fg:c2)\
 $git_branch\
 $git_status\
-[](bg:b4 fg:b3)\
+[](bg:c4 fg:c3)\
 $c\
 $rust\
 $golang\
@@ -22,12 +22,12 @@ $java\
 $kotlin\
 $haskell\
 $python\
-[](bg:b5 fg:b4)\
+[](bg:c5 fg:c4)\
 $conda\
-[](bg:g3 fg:b5)\
+[](bg:c6 fg:c5)\
 $time\
-[ ](fg:g3)\
 $cmd_duration\
+[█▓▒░ ](fg:c6)\
 $line_break\
 $character"""
 
@@ -35,7 +35,7 @@ palette = 'xby'
 
 [os]
 disabled = false
-style = "bg:b1 fg:w1"
+style = "bg:c1 fg:white"
 
 [os.symbols]
 Windows = ""
@@ -61,12 +61,12 @@ RedHatEnterprise = "󱄛"
 
 [username]
 show_always = true
-style_user = "bg:b1 fg:white"
-style_root = "bg:b1 fg:white"
+style_user = "bg:c1 fg:white"
+style_root = "bg:c1 fg:white"
 format = '[ $user ]($style)'
 
 [directory]
-style = "bg:b2 fg:white"
+style = "bg:c2 fg:white"
 format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
@@ -80,110 +80,109 @@ truncation_symbol = "…/"
 
 [git_branch]
 symbol = ""
-style = "bg:b3 fg:white"
-format = '[[ $symbol $branch ](fg:white bg:b3)]($style)'
+style = "bg:c3 fg:white"
+format = '[[ $symbol $branch ](fg:white bg:c3)]($style)'
 
 [git_status]
-style = "bg:b3 fg:white"
-format = '[[($all_status$ahead_behind )](fg:white bg:b3)]($style)'
+style = "bg:c3 fg:white"
+format = '[[($all_status$ahead_behind )](fg:white bg:c3)]($style)'
 
 [nodejs]
 symbol = ""
-style = "bg:b4 fg:white"
-format = '[[ $symbol( $version) ](fg:white bg:b4)]($style)'
+style = "bg:c4 fg:white"
+format = '[[ $symbol( $version) ](fg:white bg:c4)]($style)'
 
 [bun]
 symbol = ""
-style = "bg:b4 fg:white"
-format = '[[ $symbol( $version) ](fg:white bg:b4)]($style)'
+style = "bg:c4 fg:white"
+format = '[[ $symbol( $version) ](fg:white bg:c4)]($style)'
 
 [c]
 symbol = " "
-style = "bg:b4 fg:white"
-format = '[[ $symbol( $version) ](fg:white bg:b4)]($style)'
+style = "bg:c4 fg:white"
+format = '[[ $symbol( $version) ](fg:white bg:c4)]($style)'
 
 [rust]
 symbol = ""
-style = "bg:b4 fg:white"
-format = '[[ $symbol( $version) ](fg:white bg:b4)]($style)'
+style = "bg:c4 fg:white"
+format = '[[ $symbol( $version) ](fg:white bg:c4)]($style)'
 
 [golang]
 symbol = ""
-style = "bg:b4 fg:white"
-format = '[[ $symbol( $version) ](fg:white bg:b4)]($style)'
+style = "bg:c4 fg:white"
+format = '[[ $symbol( $version) ](fg:white bg:c4)]($style)'
 
 [php]
 symbol = ""
-style = "bg:b4 fg:white"
-format = '[[ $symbol( $version) ](fg:white bg:b4)]($style)'
+style = "bg:c4 fg:white"
+format = '[[ $symbol( $version) ](fg:white bg:c4)]($style)'
 
 [java]
 symbol = " "
-style = "bg:b4 fg:white"
-format = '[[ $symbol( $version) ](fg:white bg:b4)]($style)'
+style = "bg:c4 fg:white"
+format = '[[ $symbol( $version) ](fg:white bg:c4)]($style)'
 
 [kotlin]
 symbol = ""
-style = "bg:b4 fg:white"
-format = '[[ $symbol( $version) ](fg:white bg:b4)]($style)'
+style = "bg:c4 fg:white"
+format = '[[ $symbol( $version) ](fg:white bg:c4)]($style)'
 
 [haskell]
 symbol = ""
-style = "bg:b4 fg:white"
-format = '[[ $symbol( $version) ](fg:white bg:b4)]($style)'
+style = "bg:c4 fg:white"
+format = '[[ $symbol( $version) ](fg:white bg:c4)]($style)'
 
 [python]
 symbol = ""
-style = "bg:b4 fg:white"
-format = '[[ $symbol( $version)(\(#$virtualenv\)) ](fg:white bg:b4)]($style)'
+style = "bg:c4 fg:white"
+format = '[[ $symbol( $version)(\(#$virtualenv\)) ](fg:white bg:c4)]($style)'
 
 [docker_context]
 symbol = ""
-style = "bg:b4 fg:white"
+style = "bg:c4 fg:white"
 format = '[[ $symbol( $context) ](fg:white bg:sapphire)]($style)'
 
 [conda]
 symbol = "  "
-style = "bg:b5 fg:white"
+style = "bg:c5 fg:white"
 format = '[$symbol$environment ]($style)'
 ignore_base = false
 
 [time]
 disabled = false
 time_format = "%R"
-style = "bg:g3 fg:black"
-format = '[[  $time ](fg:black bg:g3)]($style)'
+style = "bg:c6 fg:white"
+format = '[[  $time ](fg:white bg:c6)]($style)'
 
 [line_break]
 disabled = true
 
 [character]
 disabled = false
-success_symbol = '[λ](bold fg:g2)'
-error_symbol = '[λ](bold fg:g2)'
-vimcmd_symbol = '[λ](bold fg:g2)'
-vimcmd_replace_one_symbol = '[λ](bold fg:g2)'
-vimcmd_replace_symbol = '[λ](bold fg:g2)'
-vimcmd_visual_symbol = '[λ](bold fg:g2)'
+success_symbol = '[λ](bold fg:gold)'
+error_symbol = '[λ](bold fg:gold)'
+vimcmd_symbol = '[λ](bold fg:gold)'
+vimcmd_replace_one_symbol = '[λ](bold fg:gold)'
+vimcmd_replace_symbol = '[λ](bold fg:gold)'
+vimcmd_visual_symbol = '[λ](bold fg:gold)'
 
 [cmd_duration]
 show_milliseconds = true
-format = " in $duration "
-style = "bg:g2 fg:black"
+format = '[[ in $duration](fg:white bg:c6)]($style)'
+style = "bg:c6 fg:white"
 disabled = false
 show_notifications = true
 min_time_to_notify = 45000
 
 [palettes.xby]
-b1 = "#111e2c"
-b2 = "#4a6481"
-b3 = "#6180a2"
-b4 = "#789aba"
-b5 = "#a4c2e0"
-g1 = "#ffd186"
-g2 = "#da9c62"
-g3 = "#ddc39e"
-w1 = "#d2eeff"
-w2 = "#bbcdd7"
+c1 = "#111E2C"
+c2 = "#203040"
+c3 = "#2e4155"
+c4 = "#3d5369"
+c5 = "#4c657d"
+c6 = "#5b7791"
+c7 = "#6988a6"
+c8 = "#789aba"
+gold = "#da9c62"
 white = "#ffffff"
 black = "#000000"
