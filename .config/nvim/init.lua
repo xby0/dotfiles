@@ -8,11 +8,13 @@
 -- ──────────────────────────────────────────────
 vim.pack.add({
   { src = 'https://github.com/nvim-mini/mini.nvim', version = 'stable' },
+  { src = 'https://github.com/sainnhe/edge' },
 })
 
 -- ──────────────────────────────────────────────
 -- CORE OPTIONS
 -- ──────────────────────────────────────────────
+
 vim.opt.number         = true
 vim.opt.relativenumber = true
 vim.opt.tabstop        = 2
@@ -177,3 +179,50 @@ require('mini.surround').setup()
 
 -- mini.visits ─ Track and jump to frequently/recently visited files
 require('mini.visits').setup()
+
+-- ──────────────────────────────────────────────
+-- THEME [sainnhe/edge]
+-- ──────────────────────────────────────────────
+
+require('mini.deps').add('sainnhe/edge')
+vim.cmd.colorscheme('edge')
+
+-- ──────────────────────────────────────────────
+-- KEYMAPS
+-- ──────────────────────────────────────────────
+
+vim.g.mapleader = " "
+
+vim.keymap.set("n", "t", function()
+    local minifiles = require("mini.files")
+    if not minifiles.close() then
+      local buf_name = vim.api.nvim_buf_get_name(0)
+      local path = vim.fn.filereadable(buf_name) == 1 and buf_name or vim.fn.getcwd()
+      minifiles.open(path)
+  end
+end, { desc = "toggle mini files" })
+
+-- ──────────────────────────────────────────────
+-- AUTOCMDS
+-- ──────────────────────────────────────────────
+
+local show_dotfiles = true
+local filter_show = function(fs_entry) return true end
+local filter_hide = function(fs_entry)
+  return not vim.startswith(fs_entry.name, '.')
+end
+
+local toggle_dotfiles = function()
+  show_dotfiles = not show_dotfiles
+  local new_filter = show_dotfiles and filter_show or filter_hide
+  MiniFiles.refresh({ content = { filter = new_filter } })
+end
+
+vim.api.nvim_create_autocmd('User', {
+  pattern = 'MiniFilesBufferCreate',
+  callback = function(args)
+    local buf_id = args.data.buf_id
+    -- Tweak left-hand side of mapping to your liking
+    vim.keymap.set('n', 'g.', toggle_dotfiles, { buffer = buf_id })
+  end,
+})
