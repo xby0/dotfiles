@@ -57,7 +57,7 @@ _gc_help() {
 }
 
 _gc_do() {
-  if [[ "$#" -ne 2 ]]; then
+  if [[ "$#" -gt 3 ]]; then
     echo "Semantic Commit Mesages: wrong number of arguments" >&2
     _gc_help && return 1
   fi
