@@ -1,43 +1,46 @@
-# exit early if non-interactive shell
+# exit if non-interactive
 case $- in
     *i*) ;;
       *) return;;
 esac
 
+# load secrets from doppler
+eval "$(doppler secrets download --no-file --format env --project xby --config prd)"
+
+# history options
 HISTCONTROL=ignoreboth # omit duplicate or space-leading lines from history
 HISTSIZE=10000 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTFILESIZE=20000
 
-shopt -s direxpand # fix ls tab expansion
-shopt -s histappend # append to history file, no overwrites
-shopt -s checkwinsize # resize window after each command
+# shell options
+shopt -s direxpand          # fix ls tab expansion
+shopt -s histappend         # append to history file, no overwrites
+shopt -s checkwinsize       # resize window after each command
+shopt -s globstar           # enable glob expansion with "**"
 
-# If set, the pattern "**" used in a pathname expansion context will
-# match all files and zero or more directories and subdirectories.
-#shopt -s globstar
+# make less more friendly for non-text input files
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)" 
 
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)" # make less more friendly for non-text input files
-
-# set variable identifying the chroot you work in (used in the prompt below)
+# set debian chroot
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then debian_chroot=$(cat /etc/debian_chroot); fi
 
 # ------------------------------------------------------------------------------
 # path
 # ------------------------------------------------------------------------------
 
-paths=(
-	#"new/path/here"
+paths_start=(
+	""
+)
+
+paths_end=(
 	"$HOME/homelab/ha-tools"
 )
 
-# Remove duplicates
-for p in "${EXTRA_PATHS[@]}"; do
-    if [ -d "$p" ] && [[ ":$PATH:" != *":$p:"* ]]; then
-        PATH="$PATH:$p"
-    fi
-done
+# de-dupe
+export PATH=$(echo -n "$PATH" | awk -v RS=: -v ORS=: '!x[$0]++' | sed 's/:$//')
 
-export PATH
+# custom
+export PATH="$(IFS=:; echo "${paths_start[*]}"):$PATH:$(IFS=:; echo "${paths_end[*]}")"
 
 # ------------------------------------------------------------------------------
 # bash
@@ -52,7 +55,6 @@ else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
 unset color_prompt force_color_prompt
-
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -80,17 +82,18 @@ fi
 # richer colors
 export COLORTERM=truecolor
 
-
-
 # ------------------------------------------------------------------------------
 # ssh
 # ------------------------------------------------------------------------------
 
 if [ -z "$SSH_AUTH_SOCK" ]; then
     eval "$(ssh-agent -s)" > /dev/null
-    eval "$(ssh-add $HOME/.ssh/id_ed25519)" > /dev/null
 fi
 
+ssh-add -q $HOME/.ssh/devbox
+ssh-add -q $HOME/.ssh/github
+ssh-add -q $HOME/.ssh/homeassistant-honk
+ssh-add -q $HOME/.ssh/pihole
 
 # ------------------------------------------------------------------------------
 # neovim
@@ -98,35 +101,25 @@ fi
 
 export XDG_CONFIG_HOME=~/.config
 
-
-# ------------------------------------------------------------------------------
-# autoit3
-# ------------------------------------------------------------------------------
-
-export AI3_PATH='/mnt/c/Program Files (x86)/AutoIt3'
-export AI3_EXE='$AI3_PATH/AutoIt3.exe'
-
-
 # ------------------------------------------------------------------------------
 # python
 # ------------------------------------------------------------------------------
-
 
 # ------------------------------------------------------------------------------
 # herobot
 # ------------------------------------------------------------------------------
 
-# workspace root directory ($HOME\gw\_HeroBot)
-export HEROBOT_ROOT_DIR=/mnt/c/Users/maxwe/gw/_HeroBot
+# workspace
+export HEROBOT_ROOT_DIR="$WSL_WINDOWS_HOME_DIR/gw/_HeroBot"
 
-# GWToolbox build files
-export GWTOOLBOX_BUILD_DIR="C:/Users/maxwe/gw/_HeroBot/GWToolbox/build"
-
+# GWToolbox build
+export GWTOOLBOX_BUILD_DIR_WIN="$WINDOWS_HOME_DIR\\gw\\_HeroBot\\GWToolbox\\build"
 
 # ------------------------------------------------------------------------------
 # tmux
 # ------------------------------------------------------------------------------
-  
+ 
+# re-attach to active session
 if command -v tmux &>/dev/null && [ -z "$TMUX" ]; then
     session_count=$(tmux list-sessions 2>/dev/null | wc -l)
     if [ "$session_count" -eq 0 ]; then
@@ -138,7 +131,6 @@ if command -v tmux &>/dev/null && [ -z "$TMUX" ]; then
     fi
 fi
 
-
 # ------------------------------------------------------------------------------
 # nvm
 # ------------------------------------------------------------------------------
@@ -147,16 +139,13 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # loads nvm bash_completion
 
-# Created by `pipx` on 2026-05-29 01:20:18
-export PATH="$PATH:/home/max/.local/bin"
-
-
 # ------------------------------------------------------------------------------
 # homeassistant
 # ------------------------------------------------------------------------------
 
-HA_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIwYmY1ZjU4MzNhZmI0M2FmYWRiNTAyZTE5MTMzNjJhOCIsImlhdCI6MTc3OTMwMzcwNSwiZXhwIjoyMDk0NjYzNzA1fQ.16kvBOFQO-f5YlUdq7cZ-72oT9mhWzMZX48z1WRWT4s"  # ha:/config/.env
+export HA_URL_LAN="http://$HA_IP_LAN:$HA_PORT_LAN"
 
+# reload dashboard
 ha-reload() {
     local dashboard="${1,,}"
     local view="${2,,}"
@@ -167,15 +156,12 @@ ha-reload() {
     fi
 
     ssh ha "ha-api call homeassistant reload_all" && \
-        echo "OK — http://192.168.0.200:8123/lovelace/$dashboard/$view"
+        echo "OK — http://$HA_IP_LAN:$HA_PORT_LAN/lovelace/$dashboard/$view"
 }
-
 
 # ------------------------------------------------------------------------------
 # devbox
 # ------------------------------------------------------------------------------
-
-
 
 # ------------------------------------------------------------------------------
 # doppler
@@ -183,20 +169,14 @@ ha-reload() {
 
 source <(doppler completion bash) 			# bash auto complete
 
-
 # ------------------------------------------------------------------------------
 # starship
 # ------------------------------------------------------------------------------
 
-# init below
-
+export STARSHIP_CONFIG="$HOME/.config/starship.toml"
 
 # ------------------------------------------------------------------------------
 # mUsT bE aT tHe EnD oF yOuR .bAsHrC
 # ------------------------------------------------------------------------------
 
-# de-dupe $PATH
-export PATH=$(echo -n "$PATH" | awk -v RS=: -v ORS=: '!($0 in a) {a[$0]; print}')
-
-# starship init
-eval "$(starship init bash)"
+eval "$(starship init bash)"            # starship init
