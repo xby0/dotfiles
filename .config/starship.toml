@@ -2,16 +2,17 @@ scan_timeout = 100
 
 "$schema" = 'https://starship.rs/config-schema.json'
 
-format = """
-[ ░▒▓█](c1)\
+add_newline = false
+
+format = """[ ░▒▓█](c1)\
 $os\
 $username\
-[](bg:c2 fg:c1)\
+[░](bg:c2 fg:c1)\
 $directory\
-[](bg:c3 fg:c2)\
+[░](bg:c3 fg:c2)\
 $git_branch\
 $git_status\
-[](bg:c4 fg:c3)\
+[░](bg:c4 fg:c3)\
 $c\
 $rust\
 $golang\
@@ -22,14 +23,13 @@ $java\
 $kotlin\
 $haskell\
 $python\
-[](bg:c5 fg:c4)\
+[░](bg:c5 fg:c4)\
 $conda\
-[](bg:c6 fg:c5)\
+[░](bg:c6 fg:c5)\
 $time\
 $cmd_duration\
 [█▓▒░ ](fg:c6)\
-$line_break\
-$character"""
+$character """
 
 palette = 'xby'
 
