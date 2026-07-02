@@ -85,7 +85,8 @@ require('mini.completion').setup()
 require('mini.cursorword').setup()
 
 -- mini.deps ─ Full plugin manager (an alternative to vim.pack for advanced workflows)
--- require('mini.deps').setup()
+local deps = require('mini.deps')
+deps.setup()
 
 -- mini.diff ─ Gutter signs for git hunks + toggle inline diff overlay
 require('mini.diff').setup()
@@ -145,7 +146,32 @@ require('mini.notify').setup()
 -- require('mini.operators').setup()
 
 -- mini.pairs ─ Auto-close brackets, quotes, and other pairs
-require('mini.pairs').setup()
+--require('mini.pairs').setup({
+--  mappings = {
+--    ['('] = { action = 'open', pair = '()', neigh_pattern = '[^\\].' }, -- Base pattern
+--    ['['] = { action = 'open', pair = '[]', neigh_pattern = '[^\\].' },
+--    ['{'] = { action = 'open', pair = '{}', neigh_pattern = '[^\\].' },
+--    
+--    -- Force quotes to only trigger if the right side is empty/end of line
+--    ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '[^\\].' },
+--    ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = '[^\\].' },
+--    ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '[^\\].' },
+--  }
+--})
+
+require('mini.pairs').setup({
+  mappings = {
+    -- Open actions (brackets)
+    ['('] = { action = 'open', pair = '()', neigh_pattern = '[^%w][^%w]' },
+    ['['] = { action = 'open', pair = '[]', neigh_pattern = '[^%w][^%w]' },
+    ['{'] = { action = 'open', pair = '{}', neigh_pattern = '[^%w][^%w]' },
+    
+    -- Closeopen actions (quotes and backticks)
+    ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '[^%w][^%w]' },
+    ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = '[^%w][^%w]' },
+    ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '[^%w][^%w]' },
+  }
+})
 
 -- mini.pick ─ Fuzzy finder for files, grep, buffers, LSP symbols, and more
 require('mini.pick').setup()
@@ -181,11 +207,8 @@ require('mini.surround').setup()
 require('mini.visits').setup()
 
 -- ──────────────────────────────────────────────
--- THEME [sainnhe/edge]
+-- THEME [N/A]
 -- ──────────────────────────────────────────────
-
-require('mini.deps').add('sainnhe/edge')
-vim.cmd.colorscheme('edge')
 
 -- ──────────────────────────────────────────────
 -- KEYMAPS
